@@ -1,4 +1,4 @@
-package com.videos_be.adults.controller;
+package com.videos_be.adults.actress.controller;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

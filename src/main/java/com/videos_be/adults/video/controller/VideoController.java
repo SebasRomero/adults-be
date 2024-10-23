@@ -1,4 +1,4 @@
-package com.videos_be.adults.controller;
+package com.videos_be.adults.video.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;

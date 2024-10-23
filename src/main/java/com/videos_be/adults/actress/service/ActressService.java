@@ -1,4 +1,4 @@
-package com.videos_be.adults.service;
+package com.videos_be.adults.actress.service;
 
 import org.springframework.stereotype.Service;
 

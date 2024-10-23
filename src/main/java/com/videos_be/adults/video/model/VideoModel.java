@@ -1,4 +1,4 @@
-package com.videos_be.adults.model;
+package com.videos_be.adults.video.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
