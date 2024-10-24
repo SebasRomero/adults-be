@@ -7,18 +7,19 @@ import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.Date;
 import java.util.List;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Document
+@Document(collection = "actress")
 public class ActressModel {
     @Id()
     private String id;
     private String name;
-    private Integer age;
+    private Date birth;
     private Integer videosQuantity;
     private String genre;
     private String nationality;
