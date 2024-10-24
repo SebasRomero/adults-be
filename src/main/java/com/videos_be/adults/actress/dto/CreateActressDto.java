@@ -9,7 +9,7 @@ import java.util.Date;
 import java.util.List;
 
 @Data
-public class ActressDto {
+public class CreateActressDto {
     @NotEmpty(message = "Name is required")
     private String name;
     @NotNull(message = "Birth is required")
