@@ -3,6 +3,8 @@ package com.videos_be.adults.actress.service;
 import com.videos_be.adults.actress.dto.ActressDto;
 import com.videos_be.adults.actress.model.ActressModel;
 import com.videos_be.adults.actress.repository.ActressRepository;
+import org.apache.tomcat.util.http.parser.HttpParser;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ActressService {
@@ -30,4 +33,12 @@ public class ActressService {
     }
 
 
+    public ResponseEntity<ActressModel> deleteActress(String id) {
+        Optional<ActressModel> actress = this.actressRepository.findById(id);
+        if (actress.isPresent()) {
+           this.actressRepository.deleteById(id);
+            return new ResponseEntity<>(actress.get(), null, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(null, null, HttpStatus.BAD_REQUEST);
+    }
 }

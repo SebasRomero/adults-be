@@ -14,7 +14,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Document(collection = "Actress")
+@Document(collection = "actress")
 public class ActressModel {
     @Id()
     private String id;

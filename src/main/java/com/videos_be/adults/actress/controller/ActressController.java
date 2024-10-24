@@ -26,4 +26,11 @@ public class ActressController {
     ResponseEntity<Object> saveActress(@Validated @RequestBody ActressDto actressDto){
         return ResponseHandler.generateResponse("Actress saved", HttpStatus.CREATED, this.actressService.saveActress(actressDto));
     }
-}
+
+    @DeleteMapping("{id}")
+    ResponseEntity<Object> deleteActress(@PathVariable("id") String id) {
+        ResponseEntity<ActressModel> response = this.actressService.deleteActress(id);
+        if (response.getStatusCode().isSameCodeAs(HttpStatus.BAD_REQUEST))
+            return ResponseHandler.generateResponse("Could not delete actress", HttpStatus.BAD_REQUEST, response);
+        return ResponseHandler.generateResponse("Actress deleted", HttpStatus.OK, response);
+}}
