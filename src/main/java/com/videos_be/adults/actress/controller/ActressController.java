@@ -21,7 +21,7 @@ public class ActressController {
     private ActressService actressService;
     @GetMapping()
     ResponseEntity<Object> getAllActresses() {
-        return ResponseHandler.generateResponse("Actresses", HttpStatus.OK, this.actressService.getAllActreesses());
+        return ResponseHandler.generateResponse("Actresses", HttpStatus.OK, this.actressService.getAllActresses());
     }
 
     @PostMapping()
@@ -32,16 +32,12 @@ public class ActressController {
     @DeleteMapping("{id}")
     ResponseEntity<Object> deleteActress(@PathVariable("id") String id) {
         ResponseEntity<ActressModel> response = this.actressService.deleteActress(id);
-        if (response.getStatusCode().isSameCodeAs(HttpStatus.BAD_REQUEST))
-            return ResponseHandler.generateResponse("Could not delete actress", HttpStatus.BAD_REQUEST, response);
         return ResponseHandler.generateResponse("Actress deleted", HttpStatus.OK, response);
 }
 
     @PutMapping("{id}")
     ResponseEntity<Object> updateActress(@PathVariable("id") String id, @RequestBody UpdateActressDto updateActressDto) {
         ResponseEntity<ActressModel> response = this.actressService.updateActress(id, updateActressDto);
-        if (response.getStatusCode().isSameCodeAs(HttpStatus.BAD_REQUEST))
-            return ResponseHandler.generateResponse("Could not update actress", HttpStatus.BAD_REQUEST, response);
         return ResponseHandler.generateResponse("Actress updated", HttpStatus.OK, response);
 }
 
