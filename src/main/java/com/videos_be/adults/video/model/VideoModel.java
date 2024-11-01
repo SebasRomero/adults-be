@@ -15,7 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 @Document
 public class VideoModel {
-    @Id
+    @Id()
     private String name;
     private List<String> categories;
     private List<String> actreesName;
