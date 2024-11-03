@@ -14,8 +14,4 @@ public class CreateVideoDto {
     private List<String> categories;
     @NotEmpty(message = "Actress are required")
     private List<String> actressName;
-    @NotEmpty(message = "Views are required")
-    private int viewed;
-
-
 }

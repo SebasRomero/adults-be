@@ -10,20 +10,25 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
-public class VideoService{
+public class VideoService {
 
     @Autowired
     private VideoRepository videoRepository;
 
-    public ResponseEntity<VideoModel> addVideo(CreateVideoDto createVideoDto) {
+    public VideoModel addVideo(CreateVideoDto createVideoDto) {
         VideoModel video = new VideoModel(createVideoDto.getName(), createVideoDto.getCategories(),
-                createVideoDto.getActressName(), createVideoDto.getViewed());
-        return new ResponseEntity<>(video, null, HttpStatus.CREATED);
+                createVideoDto.getActressName(), 0);
+        try {
+            return this.videoRepository.save(video);
+        } catch (Error error) {
+            throw new ResponseStatusException(HttpStatus.BAD_GATEWAY, error.getMessage(), null);
+        }
     }
 
     public Page<VideoModel> getAllVideos(Pageable pageable) {
@@ -32,7 +37,7 @@ public class VideoService{
 
     public ResponseEntity<Optional<VideoModel>> getById(String id) {
         Optional<VideoModel> video = this.videoRepository.findById(id);
-        if(video.isPresent()){
+        if (video.isPresent()) {
             return new ResponseEntity<>(video, null, HttpStatus.OK);
         }
         return new ResponseEntity<>(null, null, HttpStatus.OK);
@@ -40,7 +45,7 @@ public class VideoService{
 
     public ResponseEntity<Optional<VideoModel>> getByName(String name) {
         Optional<VideoModel> videoName = this.videoRepository.existsByName(name);
-        if(videoName.isPresent()){
+        if (videoName.isPresent()) {
             return new ResponseEntity<>(videoName, null, HttpStatus.OK);
         }
         return new ResponseEntity<>(null, null, HttpStatus.OK);
@@ -53,7 +58,7 @@ public class VideoService{
         int viewed = updateVideoDto.getViewed();
         Optional<VideoModel> video = this.videoRepository.findById(id);
 
-        if(video.isPresent()){
+        if (video.isPresent()) {
             VideoModel currentVideo = video.get();
             currentVideo.setName(name);
             currentVideo.setCategories(categories != null ? categories : currentVideo.getCategories());
@@ -70,7 +75,7 @@ public class VideoService{
     public ResponseEntity<VideoModel> deleteVideo(String id) {
 
         Optional<VideoModel> video = this.videoRepository.findById(id);
-        if(video.isPresent()){
+        if (video.isPresent()) {
             this.videoRepository.deleteById(id);
             return new ResponseEntity<>(video.get(), null, HttpStatus.OK);
         }
