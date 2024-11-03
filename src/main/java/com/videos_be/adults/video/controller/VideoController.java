@@ -1,18 +1,17 @@
 package com.videos_be.adults.video.controller;
 
-import com.videos_be.adults.actress.model.ActressModel;
 import com.videos_be.adults.handler.ResponseHandler;
 import com.videos_be.adults.video.dto.CreateVideoDto;
 import com.videos_be.adults.video.dto.UpdateVideoDto;
 import com.videos_be.adults.video.model.VideoModel;
 import com.videos_be.adults.video.service.VideoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 import java.util.Optional;
 
 @RestController()
@@ -20,13 +19,15 @@ import java.util.Optional;
 public class VideoController {
 
     @Autowired
-    VideoService videoService;
+    private VideoService videoService;
 
     @GetMapping()
-    public ResponseEntity<Object> getAllVideos() {
+    public ResponseEntity<Object> getAllVideos(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "2") int sizePerPage) {
+
+        Pageable pageable = (Pageable) PageRequest.of(page, sizePerPage);
         return ResponseHandler.generateResponse(
                 "Videos", HttpStatus.OK,
-                this.videoService.getAllVideos());
+                this.videoService.getAllVideos(pageable));
     }
 
     @GetMapping("{id}")
