@@ -16,6 +16,7 @@ import java.util.List;
 @Document
 public class VideoModel {
     @Id()
+    private String id;
     private String name;
     private List<String> categories;
     private List<String> actreesName;

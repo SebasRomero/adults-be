@@ -45,19 +45,13 @@ public class VideoController {
 
     @DeleteMapping("{id}")
     public ResponseEntity<Object> deleteVideos(@PathVariable("id") String id){
-        ResponseEntity<VideoModel> response = this.videoService.deleteVideo(id);
-        if (response.getStatusCode().isSameCodeAs(HttpStatus.BAD_REQUEST))
-            return ResponseHandler.generateResponse("Could not delete video", HttpStatus.BAD_REQUEST, response);
-        return ResponseHandler.generateResponse("Video deleted", HttpStatus.OK, response);
+        return ResponseHandler.generateResponse("Video deleted", HttpStatus.OK, this.videoService.deleteVideo(id));
 
     }
 
     @PutMapping("{id}")
     public ResponseEntity<Object> updateVideos(@PathVariable("id") String id, @RequestBody UpdateVideoDto updateVideoDto){
-        ResponseEntity<VideoModel> response = this.videoService.updateVideo(id, updateVideoDto);
-        if (response.getStatusCode().isSameCodeAs(HttpStatus.BAD_REQUEST))
-            return ResponseHandler.generateResponse("Could not update video", HttpStatus.BAD_REQUEST, response);
-        return ResponseHandler.generateResponse("Video updated", HttpStatus.OK, response);
+        return ResponseHandler.generateResponse("Video updated", HttpStatus.OK, this.videoService.updateVideo(id, updateVideoDto));
 
     }
 }

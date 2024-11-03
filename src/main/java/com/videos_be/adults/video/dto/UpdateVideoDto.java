@@ -11,6 +11,4 @@ public class UpdateVideoDto {
         private String name;
         private List<String> categories;
         private List<String> actressName;
-        private int viewed;
-
 }

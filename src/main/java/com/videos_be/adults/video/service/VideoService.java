@@ -23,7 +23,7 @@ public class VideoService {
     private VideoRepository videoRepository;
 
     public VideoModel addVideo(CreateVideoDto createVideoDto) {
-        VideoModel video = new VideoModel(createVideoDto.getName(), createVideoDto.getCategories(),
+        VideoModel video = new VideoModel(null,createVideoDto.getName(), createVideoDto.getCategories(),
                 createVideoDto.getActressName(), 0);
         try {
             return this.videoRepository.save(video);
@@ -55,11 +55,10 @@ public class VideoService {
         return new ResponseEntity<>(null, null, HttpStatus.OK);
     }
 
-    public ResponseEntity<VideoModel> updateVideo(String id, UpdateVideoDto updateVideoDto) {
+    public VideoModel updateVideo(String id, UpdateVideoDto updateVideoDto) {
         String name = updateVideoDto.getName();
         List<String> categories = updateVideoDto.getCategories();
         List<String> actressName = updateVideoDto.getActressName();
-        int viewed = updateVideoDto.getViewed();
         Optional<VideoModel> video = this.videoRepository.findById(id);
 
         if (video.isPresent()) {
@@ -67,23 +66,31 @@ public class VideoService {
             currentVideo.setName(name);
             currentVideo.setCategories(categories != null ? categories : currentVideo.getCategories());
             currentVideo.setActreesName(actressName != null ? actressName : currentVideo.getActreesName());
-            currentVideo.setViewed(viewed != currentVideo.getViewed() ? viewed : currentVideo.getViewed());
-            this.videoRepository.save(currentVideo);
-            return new ResponseEntity<>(currentVideo, null, HttpStatus.OK);
+            try {
+         return   this.videoRepository.save(currentVideo);
+
+            } catch (Error error) {
+                throw new ResponseStatusException(HttpStatus.BAD_GATEWAY, error.getMessage(), null);
+            }
         }
 
-        return new ResponseEntity<>(null, null, HttpStatus.BAD_REQUEST);
 
+        throw new ResponseStatusException(HttpStatus.BAD_GATEWAY, "Could not update the video", null);
     }
 
-    public ResponseEntity<VideoModel> deleteVideo(String id) {
+    public VideoModel deleteVideo(String id) {
 
         Optional<VideoModel> video = this.videoRepository.findById(id);
         if (video.isPresent()) {
-            this.videoRepository.deleteById(id);
-            return new ResponseEntity<>(video.get(), null, HttpStatus.OK);
+            try {
+                this.videoRepository.deleteById(id);
+            } catch (Error error) {
+
+                throw new ResponseStatusException(HttpStatus.BAD_GATEWAY, error.getMessage(), null);
+            }
+            return video.get();
         }
-        return new ResponseEntity<>(null, null, HttpStatus.BAD_REQUEST);
+        throw new ResponseStatusException(HttpStatus.BAD_GATEWAY, "Could not delete the video", null);
 
     }
 }
