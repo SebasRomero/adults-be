@@ -13,13 +13,13 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Document
+@Document(collection = "video")
 public class VideoModel {
     @Id()
     private String id;
     private String name;
     private List<String> categories;
-    private List<String> actreesName;
+    private List<String> actressName;
     private int viewed;
 
 }

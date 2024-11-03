@@ -1,6 +1,5 @@
 package com.videos_be.adults.video.service;
 
-import com.videos_be.adults.actress.model.ActressModel;
 import com.videos_be.adults.video.dto.CreateVideoDto;
 import com.videos_be.adults.video.dto.UpdateVideoDto;
 import com.videos_be.adults.video.model.VideoModel;
@@ -65,7 +64,7 @@ public class VideoService {
             VideoModel currentVideo = video.get();
             currentVideo.setName(name);
             currentVideo.setCategories(categories != null ? categories : currentVideo.getCategories());
-            currentVideo.setActreesName(actressName != null ? actressName : currentVideo.getActreesName());
+            currentVideo.setActressName(actressName != null ? actressName : currentVideo.getActressName());
             try {
          return   this.videoRepository.save(currentVideo);
 
