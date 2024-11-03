@@ -32,12 +32,7 @@ public class VideoController {
 
     @GetMapping("{id}")
     public ResponseEntity<Object> getOne(@PathVariable("id") String id){
-        ResponseEntity<Optional<VideoModel>> response = this.videoService.getById(id);
-        if (response.getStatusCode().isSameCodeAs(HttpStatus.NOT_FOUND))
-            return ResponseHandler.generateResponse(
-                "Video not found", HttpStatus.NOT_FOUND,
-                    response);
-        return ResponseHandler.generateResponse("Video found", HttpStatus.OK, response);
+        return ResponseHandler.generateResponse("Video", HttpStatus.OK, this.videoService.getById(id));
     }
 
 

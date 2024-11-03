@@ -1,5 +1,6 @@
 package com.videos_be.adults.video.service;
 
+import com.videos_be.adults.actress.model.ActressModel;
 import com.videos_be.adults.video.dto.CreateVideoDto;
 import com.videos_be.adults.video.dto.UpdateVideoDto;
 import com.videos_be.adults.video.model.VideoModel;
@@ -35,13 +36,16 @@ public class VideoService {
         return this.videoRepository.findAll(pageable);
     }
 
-    public ResponseEntity<Optional<VideoModel>> getById(String id) {
-        Optional<VideoModel> video = this.videoRepository.findById(id);
-        if (video.isPresent()) {
-            return new ResponseEntity<>(video, null, HttpStatus.OK);
+    public VideoModel getById(String id) {
+        try {
+            Optional<VideoModel> video = this.videoRepository.findById(id);
+            if (video.isPresent()) return video.get();
+        } catch (Error error) {
+            throw new ResponseStatusException(HttpStatus.BAD_GATEWAY, error.getMessage(), null);
         }
-        return new ResponseEntity<>(null, null, HttpStatus.OK);
+        return null;
     }
+
 
     public ResponseEntity<Optional<VideoModel>> getByName(String name) {
         Optional<VideoModel> videoName = this.videoRepository.existsByName(name);
