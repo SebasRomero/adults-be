@@ -5,11 +5,12 @@ import com.videos_be.adults.actress.dto.UpdateActressDto;
 import com.videos_be.adults.actress.model.ActressModel;
 import com.videos_be.adults.actress.repository.ActressRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,39 +20,64 @@ public class ActressService {
     @Autowired
     private ActressRepository actressRepository;
 
-    public ResponseEntity<ActressModel> saveActress(CreateActressDto createActressDto) {
-        ActressModel actress = new ActressModel(null, createActressDto.getName(), createActressDto.getBirth(), 0, createActressDto.getGenre(), createActressDto.getNationality(), createActressDto.getCategories(), 0);
-        ActressModel newActress = this.actressRepository.save(actress);
-        return new ResponseEntity<>(newActress, null, HttpStatus.CREATED);
+    public ActressModel saveActress(CreateActressDto createActressDto) {
+        ActressModel actress = new ActressModel(null, createActressDto.getName(), createActressDto.getBirth(),
+                0, createActressDto.getGenre(), createActressDto.getNationality(),
+                createActressDto.getCategories(), 0);
+        ActressModel newActress;
+        try {
+            newActress = this.actressRepository.save(actress);
+        } catch (Error error) {
+            throw new ResponseStatusException(HttpStatus.BAD_GATEWAY, error.getMessage(), null);
+        }
+        return newActress;
     }
 
-    public ResponseEntity<List<ActressModel>> getAllActreesses() {
-        List<ActressModel> actressModels = new ArrayList<>();
-        actressModels = this.actressRepository.findAll();
-        return new ResponseEntity<>(actressModels, null, HttpStatus.OK);
+    public Page<ActressModel> getAllActresses(Pageable pageable) {
+        return this.actressRepository.findAll(pageable);
+    }
+
+    public ActressModel getActressById(String id) {
+        try {
+            Optional<ActressModel> actress = this.actressRepository.findById(id);
+            if (actress.isPresent()) return actress.get();
+        } catch (Error error) {
+            throw new ResponseStatusException(HttpStatus.BAD_GATEWAY, error.getMessage(), null);
+        }
+        return null;
     }
 
 
-    public ResponseEntity<ActressModel> deleteActress(String id) {
+    public ActressModel deleteActress(String id) {
         Optional<ActressModel> actress = this.actressRepository.findById(id);
         if (actress.isPresent()) {
-           this.actressRepository.deleteById(id);
-            return new ResponseEntity<>(actress.get(), null, HttpStatus.OK);
+            try {
+                this.actressRepository.deleteById(id);
+            } catch (Error error) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, error.getMessage(), null);
+            }
+            return actress.get();
         }
-        return new ResponseEntity<>(null, null, HttpStatus.BAD_REQUEST);
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Could not delete the actress", null);
     }
 
-    public ResponseEntity<ActressModel> updateActress(String id, UpdateActressDto updateActressDto) {
+    public ActressModel updateActress(String id, UpdateActressDto updateActressDto) {
         String name = updateActressDto.getName();
         List<String> categories = updateActressDto.getCategories();
+        String genre = updateActressDto.getGenre();
+
         Optional<ActressModel> actress = this.actressRepository.findById(id);
         if (actress.isPresent()) {
-            ActressModel actualActress = actress.get();
-            actualActress.setName(name);
-            actualActress.setCategories(categories != null ? categories : actualActress.getCategories());
-            this.actressRepository.save(actualActress);
-            return new ResponseEntity<>(actualActress, null, HttpStatus.OK);
+            ActressModel currentActress = actress.get();
+            currentActress.setName(name != null ? name : currentActress.getName());
+            currentActress.setGenre(genre != null ? genre : currentActress.getGenre());
+            currentActress.setCategories(categories != null ? categories : currentActress.getCategories());
+            try {
+                return this.actressRepository.save(currentActress);
+            } catch (Error error) {
+                throw new ResponseStatusException(HttpStatus.BAD_GATEWAY, error.getMessage(), null);
+            }
         }
-        return new ResponseEntity<>(null, null, HttpStatus.BAD_REQUEST);
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Could not delete the actress", null);
     }
 }
