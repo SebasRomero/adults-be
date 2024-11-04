@@ -8,6 +8,8 @@ import com.videos_be.adults.video.service.VideoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.mongodb.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -22,12 +24,13 @@ public class VideoController {
     private VideoService videoService;
 
     @GetMapping()
-    public ResponseEntity<Object> getAllVideos(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "2") int sizePerPage) {
+    public ResponseEntity<Object> getAllVideos(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "2") int sizePerPage,
+                                               @RequestParam(required = false) String name) {
 
         Pageable pageable = (Pageable) PageRequest.of(page, sizePerPage);
         return ResponseHandler.generateResponse(
                 "Videos", HttpStatus.OK,
-                this.videoService.getAllVideos(pageable));
+                this.videoService.getAllVideos(pageable, name));
     }
 
     @GetMapping("{id}")
