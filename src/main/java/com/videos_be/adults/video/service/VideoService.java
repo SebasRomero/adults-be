@@ -31,7 +31,7 @@ public class VideoService {
         }
     }
 
-    public Page<VideoModel> getAllVideos(Pageable pageable) {
+        public Page<VideoModel> getAllVideos(Pageable pageable) {
         return this.videoRepository.findAll(pageable);
     }
 
