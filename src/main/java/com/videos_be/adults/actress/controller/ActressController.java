@@ -21,9 +21,9 @@ public class ActressController {
     @Autowired
     private ActressService actressService;
     @GetMapping()
-    ResponseEntity<Object> getAllActresses(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "2") int sizePerPage) {
+    ResponseEntity<Object> getAllActresses(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "2") int sizePerPage, @RequestParam(required = false) String name) {
         Pageable pageable = (Pageable) PageRequest.of(page, sizePerPage);
-        return ResponseHandler.generateResponse("Actresses", HttpStatus.OK, this.actressService.getAllActresses(pageable));
+        return ResponseHandler.generateResponse("Actresses", HttpStatus.OK, this.actressService.getAllActresses(pageable, name));
     }
 
     @GetMapping("{id}")

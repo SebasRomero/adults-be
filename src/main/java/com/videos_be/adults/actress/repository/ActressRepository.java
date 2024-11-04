@@ -6,5 +6,5 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 public interface ActressRepository extends MongoRepository<ActressModel, String> {
-    Page<ActressModel> findAll(Pageable pageable);
+Page<ActressModel> findAllByNameLike(String name, Pageable pageable);
 }

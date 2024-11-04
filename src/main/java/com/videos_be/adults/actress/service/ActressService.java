@@ -33,7 +33,8 @@ public class ActressService {
         return newActress;
     }
 
-    public Page<ActressModel> getAllActresses(Pageable pageable) {
+    public Page<ActressModel> getAllActresses(Pageable pageable, String name) {
+        if (name != null) return this.actressRepository.findAllByNameLike(name, pageable);
         return this.actressRepository.findAll(pageable);
     }
 
