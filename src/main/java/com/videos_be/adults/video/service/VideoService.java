@@ -31,7 +31,8 @@ public class VideoService {
         }
     }
 
-        public Page<VideoModel> getAllVideos(Pageable pageable) {
+        public Page<VideoModel> getAllVideos(Pageable pageable, String name) {
+        if(name != null) return this.videoRepository.findAllByNameLike(name, pageable);
         return this.videoRepository.findAll(pageable);
     }
 
@@ -46,13 +47,7 @@ public class VideoService {
     }
 
 
-    public ResponseEntity<Optional<VideoModel>> getByName(String name) {
-        Optional<VideoModel> videoName = this.videoRepository.existsByName(name);
-        if (videoName.isPresent()) {
-            return new ResponseEntity<>(videoName, null, HttpStatus.OK);
-        }
-        return new ResponseEntity<>(null, null, HttpStatus.OK);
-    }
+
 
     public VideoModel updateVideo(String id, UpdateVideoDto updateVideoDto) {
         String name = updateVideoDto.getName();
