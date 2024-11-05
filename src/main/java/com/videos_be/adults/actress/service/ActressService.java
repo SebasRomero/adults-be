@@ -26,6 +26,9 @@ public class ActressService {
                 createActressDto.getCategories(), 0);
         ActressModel newActress;
         try {
+            Optional<ActressModel> actressFound = this.actressRepository.findByNameLike(actress.getName());
+            if (actressFound.isPresent())
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Actress already exist.", null);
             newActress = this.actressRepository.save(actress);
         } catch (Error error) {
             throw new ResponseStatusException(HttpStatus.BAD_GATEWAY, error.getMessage(), null);
