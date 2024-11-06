@@ -1,6 +1,8 @@
 package com.videos_be.adults.video.service;
 
-import com.videos_be.adults.actress.model.ActressModel;
+import com.videos_be.adults.category.model.CategoryModel;
+import com.videos_be.adults.category.repository.CategoryRepository;
+import com.videos_be.adults.category.service.CategoryService;
 import com.videos_be.adults.video.dto.CreateVideoDto;
 import com.videos_be.adults.video.dto.UpdateVideoDto;
 import com.videos_be.adults.video.model.VideoModel;
@@ -11,28 +13,45 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class VideoService {
 
+
+
     @Autowired
     private VideoRepository videoRepository;
 
+    @Autowired
+    private CategoryService categoryService;
+
     public VideoModel addVideo(CreateVideoDto createVideoDto) {
-        VideoModel video = new VideoModel(null,createVideoDto.getName(), createVideoDto.getCategories(),
-                createVideoDto.getActressName(), 0);
+            VideoModel video = new VideoModel(null,createVideoDto.getName(), createVideoDto.getCategories(),
+                    createVideoDto.getActressName(), 0);
+        VideoModel newVideo;
         try {
-            return this.videoRepository.save(video);
+            Optional<VideoModel> videoFound = this.videoRepository.findByNameLike(video.getName());
+            if (videoFound.isPresent())
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Video already exist.", null);
+            else if (!this.categoryService.allCategoriesExistInDB(video.getCategories())) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Category doesn't exist.", null);
+            }
+            newVideo = this.videoRepository.save(video);
         } catch (Error error) {
             throw new ResponseStatusException(HttpStatus.BAD_GATEWAY, error.getMessage(), null);
         }
+        return newVideo;
     }
 
-    public Page<VideoModel> getAllVideos(Pageable pageable) {
+
+
+    public Page<VideoModel> getAllVideos(Pageable pageable, String name) {
+        if(name != null) return this.videoRepository.findAllByNameLike(name, pageable);
         return this.videoRepository.findAll(pageable);
     }
 
@@ -47,13 +66,7 @@ public class VideoService {
     }
 
 
-    public ResponseEntity<Optional<VideoModel>> getByName(String name) {
-        Optional<VideoModel> videoName = this.videoRepository.existsByName(name);
-        if (videoName.isPresent()) {
-            return new ResponseEntity<>(videoName, null, HttpStatus.OK);
-        }
-        return new ResponseEntity<>(null, null, HttpStatus.OK);
-    }
+
 
     public VideoModel updateVideo(String id, UpdateVideoDto updateVideoDto) {
         String name = updateVideoDto.getName();
@@ -65,7 +78,7 @@ public class VideoService {
             VideoModel currentVideo = video.get();
             currentVideo.setName(name);
             currentVideo.setCategories(categories != null ? categories : currentVideo.getCategories());
-            currentVideo.setActreesName(actressName != null ? actressName : currentVideo.getActreesName());
+            currentVideo.setActressName(actressName != null ? actressName : currentVideo.getActressName());
             try {
          return   this.videoRepository.save(currentVideo);
 
