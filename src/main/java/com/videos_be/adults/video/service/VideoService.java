@@ -2,6 +2,7 @@ package com.videos_be.adults.video.service;
 
 import com.videos_be.adults.category.model.CategoryModel;
 import com.videos_be.adults.category.repository.CategoryRepository;
+import com.videos_be.adults.category.service.CategoryService;
 import com.videos_be.adults.video.dto.CreateVideoDto;
 import com.videos_be.adults.video.dto.UpdateVideoDto;
 import com.videos_be.adults.video.model.VideoModel;
@@ -27,7 +28,7 @@ public class VideoService {
     private VideoRepository videoRepository;
 
     @Autowired
-    CategoryRepository categoryRepository;
+    private CategoryService categoryService;
 
     public VideoModel addVideo(CreateVideoDto createVideoDto) {
             VideoModel video = new VideoModel(null,createVideoDto.getName(), createVideoDto.getCategories(),
@@ -35,14 +36,9 @@ public class VideoService {
         VideoModel newVideo;
         try {
             Optional<VideoModel> videoFound = this.videoRepository.findByNameLike(video.getName());
-            List<CategoryModel> categotyList = this.categoryRepository.findAll();
-            List<String> category = video.getCategories();
-            List<String> categoryNames = categotyList.stream()
-                    .map(CategoryModel::getName)
-                    .toList();
             if (videoFound.isPresent())
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Video already exist.", null);
-            else if (!CollectionUtils.containsAny(category, categoryNames)) {
+            else if (!this.categoryService.allCategoriesExistInDB(video.getCategories())) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Category doesn't exist.", null);
             }
             newVideo = this.videoRepository.save(video);

@@ -4,6 +4,8 @@ import com.videos_be.adults.actress.dto.CreateActressDto;
 import com.videos_be.adults.actress.dto.UpdateActressDto;
 import com.videos_be.adults.actress.model.ActressModel;
 import com.videos_be.adults.actress.repository.ActressRepository;
+import com.videos_be.adults.category.repository.CategoryRepository;
+import com.videos_be.adults.category.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,15 +22,21 @@ public class ActressService {
     @Autowired
     private ActressRepository actressRepository;
 
+    @Autowired
+    private CategoryService categoryService;
+
     public ActressModel saveActress(CreateActressDto createActressDto) {
+
         ActressModel actress = new ActressModel(null, createActressDto.getName(), createActressDto.getBirth(),
                 0, createActressDto.getGenre(), createActressDto.getNationality(),
                 createActressDto.getCategories(), 0);
         ActressModel newActress;
         try {
             Optional<ActressModel> actressFound = this.actressRepository.findByNameLike(actress.getName());
-            if (actressFound.isPresent())
+            if (actressFound.isPresent()) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Actress already exist.", null);
+            } else if (!this.categoryService.allCategoriesExistInDB(createActressDto.getCategories()))
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Verify that the categories exist before add.", null);
             newActress = this.actressRepository.save(actress);
         } catch (Error error) {
             throw new ResponseStatusException(HttpStatus.BAD_GATEWAY, error.getMessage(), null);
