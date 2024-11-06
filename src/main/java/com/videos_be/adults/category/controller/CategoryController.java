@@ -1,4 +1,5 @@
 package com.videos_be.adults.category.controller;
+import com.videos_be.adults.category.dto.CategoriesDto;
 import com.videos_be.adults.category.dto.CreateCategoryDto;
 import com.videos_be.adults.category.dto.UpdateCategoryDto;
 import com.videos_be.adults.category.service.CategoryService;
@@ -10,6 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController()
 @RequestMapping("/category")
@@ -51,5 +54,10 @@ public class CategoryController {
     public ResponseEntity<Object> updateCategory(@PathVariable("id") String id, @RequestBody UpdateCategoryDto updateCategoryDto){
         return ResponseHandler.generateResponse("Category updated", HttpStatus.OK, this.categoryService.updateCategory(updateCategoryDto, id));
 
+    }
+
+    @GetMapping("/test")
+    public boolean testCategories(@RequestBody CategoriesDto categories) {
+        return this.categoryService.allCategoriesExistInDB(categories.getCategories());
     }
 }
