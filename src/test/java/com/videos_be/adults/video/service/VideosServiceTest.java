@@ -1,4 +1,4 @@
-package com.videos_be.adults.service;
+package com.videos_be.adults.video.service;
 
 import com.videos_be.adults.video.repository.VideoRepository;
 import com.videos_be.adults.video.service.VideoService;
