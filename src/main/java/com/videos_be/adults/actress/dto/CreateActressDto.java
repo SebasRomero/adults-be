@@ -2,6 +2,7 @@ package com.videos_be.adults.actress.dto;
 
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 
@@ -9,6 +10,7 @@ import java.util.Date;
 import java.util.List;
 
 @Data
+@AllArgsConstructor
 public class CreateActressDto {
     @NotEmpty(message = "Name is required")
     private String name;
