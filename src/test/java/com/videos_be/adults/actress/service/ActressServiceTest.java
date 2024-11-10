@@ -113,7 +113,23 @@ public class ActressServiceTest {
         });
 
         assertEquals(HttpStatus.BAD_GATEWAY, exception.getStatusCode());
-
-
     }
+
+    @Test
+    public void getActressByIdTest() {
+        ActressModel foundActressModel = DataActressServiceProvider.foundActressModel();
+        when(this.actressRepository.findById(any(String.class))).thenReturn(Optional.of(foundActressModel));
+        ActressModel response = this.actressService.getActressById("1");
+
+        assertEquals(response.getName(), foundActressModel.getName());
+        assertEquals(response.getId(), "3");
+    }
+
+    @Test
+    public void getActressByIdActressNull() {
+        when(this.actressRepository.findById(any(String.class))).thenReturn(Optional.empty());
+        ActressModel response = this.actressService.getActressById("1");
+        assertNull(response);
+    }
+
 }
