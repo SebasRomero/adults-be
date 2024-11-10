@@ -1,5 +1,6 @@
 package com.videos_be.adults.video.service;
 
+import com.videos_be.adults.actress.model.ActressModel;
 import com.videos_be.adults.category.service.CategoryService;
 import com.videos_be.adults.video.DataVideoProvider;
 import com.videos_be.adults.video.dto.CreateVideoDto;
@@ -9,6 +10,7 @@ import com.videos_be.adults.video.service.VideoService;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -63,19 +65,19 @@ public class VideosServiceTest {
     public void createVideoTest() {
 
         when(videoRepository.save(any(VideoModel.class)))
-                .thenReturn(DataVideoProvider.createMock());
-       // when(categoryService.allCategoriesExistInDB(any()))
+                .thenReturn(DataVideoProvider.createVideoMock());
+       when(categoryService.allCategoriesExistInDB(anyList())).thenReturn(true);
 
-        CreateVideoDto videoDto = DataVideoProvider.createVideoMock();
-        VideoModel videoModels = this.videoService.addVideo(videoDto);
+        CreateVideoDto videoDto = DataVideoProvider.createVideoDtoMock();
+        VideoModel videoModel = this.videoService.addVideo(videoDto);
 
-        assertFalse(videoModels.getName().isEmpty());
-        assertEquals("Shopping Spree", videoModels.getName());
+        assertFalse(videoModel.getName().isEmpty());
+        assertEquals("Shopping Spree", videoModel.getName());
+        verify(videoRepository).save(any(VideoModel.class));
+        ArgumentCaptor<VideoModel> argumentCaptor = ArgumentCaptor.forClass(VideoModel.class);
+        verify(videoRepository).save(argumentCaptor.capture());
+        assertEquals(videoModel.getName(), argumentCaptor.getValue().getName());
     }
-
-
-
-
 
 
 }

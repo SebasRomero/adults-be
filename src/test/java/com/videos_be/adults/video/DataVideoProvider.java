@@ -28,12 +28,12 @@ public class DataVideoProvider {
                 (new VideoModel("1", "Fake taxi", List.of("White woman"), List.of("Juana"), 0)), pageable, 0);
     }
 
-    public static CreateVideoDto createVideoMock(){
+    public static CreateVideoDto createVideoDtoMock(){
         return new CreateVideoDto("Shopping Spree",
                 List.of("Middle Eastern woman"), List.of("Amira"));
     }
 
-    public static VideoModel createMock(){
+    public static VideoModel createVideoMock(){
         return new VideoModel("6", "Shopping Spree", List.of("Middle Eastern woman"), List.of("Amira"), 5);
     }
 
