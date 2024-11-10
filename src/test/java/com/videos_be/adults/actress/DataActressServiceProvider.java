@@ -35,7 +35,7 @@ public class DataActressServiceProvider {
 
     public static ActressModel newActressMock() {
         Date myDate = new Date(2001, 9, 16);
-        return new ActressModel(null, "Paola", myDate, 2, "Female", "Russian", List.of("White woman"), 0);
+        return new ActressModel("3", "Paola", myDate, 2, "Female", "Russian", List.of("White woman"), 0);
     }
 
     public static List<String> categoryModelListMock() {
@@ -45,5 +45,10 @@ public class DataActressServiceProvider {
     public static Optional<ActressModel> findByNameLikeMock() {
         Date myDate = new Date(2001, 9, 16);
         return Optional.of(new ActressModel("3", "Paola", myDate, 2, "Female", "Russian", List.of("White woman"), 0));
+    }
+
+    public static ActressModel foundActressModel() {
+        Date myDate = new Date(2001, 9, 16);
+        return new ActressModel("3", "Paola", myDate, 2, "Female", "Russian", List.of("White woman"), 0);
     }
 }
