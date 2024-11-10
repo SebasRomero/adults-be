@@ -1,11 +1,12 @@
 package com.videos_be.adults.video.dto;
 
 import jakarta.validation.constraints.NotEmpty;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.util.List;
 
-
+@AllArgsConstructor
 @Data
 public class CreateVideoDto {
     @NotEmpty(message = "Name is required")
@@ -15,3 +16,6 @@ public class CreateVideoDto {
     @NotEmpty(message = "Actress are required")
     private List<String> actressName;
 }
+
+
+
