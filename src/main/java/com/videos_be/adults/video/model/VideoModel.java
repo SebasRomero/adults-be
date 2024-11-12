@@ -37,6 +37,17 @@ public class VideoModel {
         this.actressName = actressName;
         this.viewed = viewed;
     }
+
+    @Override
+    public String toString() {
+        return "com.videos_be.adults.video.model.VideoModel{" +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", categories=" + categories +
+                ", actressName=" + actressName +
+                ", viewed=" + viewed +
+                '}';
+    }
 }
 
 

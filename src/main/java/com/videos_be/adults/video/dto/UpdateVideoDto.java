@@ -1,10 +1,12 @@
 package com.videos_be.adults.video.dto;
 
 import jakarta.validation.constraints.NotEmpty;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.util.List;
 
+@AllArgsConstructor
 @Data
 public class UpdateVideoDto {
         @NotEmpty(message = "Name is required")

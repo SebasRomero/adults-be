@@ -78,7 +78,7 @@ public class VideoService {
             currentVideo.setCategories(categories != null ? categories : currentVideo.getCategories());
             currentVideo.setActressName(actressName != null ? actressName : currentVideo.getActressName());
             try {
-         return   this.videoRepository.save(currentVideo);
+         return this.videoRepository.save(currentVideo);
 
             } catch (Error error) {
                 throw new ResponseStatusException(HttpStatus.BAD_GATEWAY, error.getMessage(), null);
@@ -101,7 +101,7 @@ public class VideoService {
             }
             return video.get();
         }
-        throw new ResponseStatusException(HttpStatus.BAD_GATEWAY, "Could not delete the video", null);
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Could not delete the video", null);
 
     }
 }

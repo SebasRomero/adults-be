@@ -1,12 +1,14 @@
 package com.videos_be.adults.video;
 
 import com.videos_be.adults.video.dto.CreateVideoDto;
+import com.videos_be.adults.video.dto.UpdateVideoDto;
 import com.videos_be.adults.video.model.VideoModel;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
+import java.util.Optional;
 
 public class DataVideoProvider {
 
@@ -36,6 +38,26 @@ public class DataVideoProvider {
     public static VideoModel createVideoMock(){
         return new VideoModel("6", "Shopping Spree", List.of("Middle Eastern woman"), List.of("Amira"), 5);
     }
+
+    public static Optional<VideoModel> createVideoFoundMock(){
+        return Optional.of(new VideoModel("6", "Shopping Spree", List.of("Middle Eastern woman"), List.of("Amira"), 5));
+    }
+
+    public static VideoModel findByIdMock(){
+        return new VideoModel("6", "Shopping Spree", List.of("Middle Eastern woman"), List.of("Amira"), 5);
+    }
+
+    public static UpdateVideoDto updateVideoDtoMock(){
+        return new UpdateVideoDto("Shopping Spree",
+                List.of("Middle Eastern woman"), List.of("Amira"));
+    }
+
+    public static UpdateVideoDto updateVideoDtoPartialMock(){
+        return new UpdateVideoDto("Shopping Spree",
+                null, null);
+    }
+
+
 
 
 
