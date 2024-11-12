@@ -1,6 +1,7 @@
 package com.videos_be.adults.actress;
 
 import com.videos_be.adults.actress.dto.CreateActressDto;
+import com.videos_be.adults.actress.dto.UpdateActressDto;
 import com.videos_be.adults.actress.model.ActressModel;
 import com.videos_be.adults.category.model.CategoryModel;
 import org.springframework.data.domain.Page;
@@ -50,5 +51,13 @@ public class DataActressServiceProvider {
     public static ActressModel foundActressModel() {
         Date myDate = new Date(2001, 9, 16);
         return new ActressModel("3", "Paola", myDate, 2, "Female", "Russian", List.of("White woman"), 0);
+    }
+
+    public static UpdateActressDto updateActressDto() {
+        return new UpdateActressDto("Paola", List.of("White woman"), "Female");
+    }
+
+    public static UpdateActressDto updateActressDtoPartial() {
+        return new UpdateActressDto(null, null, null);
     }
 }
