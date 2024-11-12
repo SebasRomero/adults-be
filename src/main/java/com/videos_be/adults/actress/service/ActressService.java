@@ -66,7 +66,7 @@ public class ActressService {
             try {
                 this.actressRepository.deleteById(id);
             } catch (Error error) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, error.getMessage(), null);
+                throw new ResponseStatusException(HttpStatus.BAD_GATEWAY, error.getMessage(), null);
             }
             return actress.get();
         }
