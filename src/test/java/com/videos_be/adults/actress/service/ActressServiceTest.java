@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import com.videos_be.adults.actress.DataActressServiceProvider;
 import com.videos_be.adults.actress.dto.CreateActressDto;
+import com.videos_be.adults.actress.dto.UpdateActressDto;
 import com.videos_be.adults.actress.model.ActressModel;
 import com.videos_be.adults.actress.repository.ActressRepository;
 import com.videos_be.adults.category.repository.CategoryRepository;
@@ -22,6 +23,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import static org.mockito.Mockito.*;
@@ -106,13 +108,14 @@ public class ActressServiceTest {
         CreateActressDto actressModelDto = DataActressServiceProvider.newActressMockDto();
         when(this.actressRepository.findByNameLike(anyString())).thenReturn(Optional.empty());
         when(this.categoryService.allCategoriesExistInDB(DataActressServiceProvider.categoryModelListMock())).thenReturn(true);
-        when(this.actressRepository.save(any(ActressModel.class))).thenThrow(new ResponseStatusException(HttpStatus.BAD_GATEWAY,any(String.class), null));
+        when(this.actressRepository.save(any(ActressModel.class))).thenThrow(new Error("Error"));
 
         ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
             this.actressService.saveActress(actressModelDto);
         });
 
         assertEquals(HttpStatus.BAD_GATEWAY, exception.getStatusCode());
+        assertEquals("Error", exception.getReason());
     }
 
     @Test
@@ -120,16 +123,112 @@ public class ActressServiceTest {
         ActressModel foundActressModel = DataActressServiceProvider.foundActressModel();
         when(this.actressRepository.findById(any(String.class))).thenReturn(Optional.of(foundActressModel));
         ActressModel response = this.actressService.getActressById("1");
-
         assertEquals(response.getName(), foundActressModel.getName());
         assertEquals(response.getId(), "3");
     }
 
     @Test
-    public void getActressByIdActressNull() {
+    public void getActressByIdActressNullTest() {
         when(this.actressRepository.findById(any(String.class))).thenReturn(Optional.empty());
         ActressModel response = this.actressService.getActressById("1");
         assertNull(response);
+    }
+
+    @Test
+    public void getActressByIdErrorTest() {
+        when(this.actressRepository.findById(any(String.class))).thenThrow(new Error("Error"));
+
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
+            this.actressService.getActressById("1");
+        });
+
+        assertEquals(HttpStatus.BAD_GATEWAY, exception.getStatusCode());
+        assertEquals("Error", exception.getReason());
+    }
+
+    @Test
+    public void deleteActressTest() {
+        when(this.actressRepository.findById(anyString())).thenReturn(Optional.of(DataActressServiceProvider.foundActressModel()));
+        ActressModel actressModel = this.actressService.deleteActress("1");
+        assertEquals(DataActressServiceProvider.foundActressModel().getName(), actressModel.getName());
+    }
+
+    @Test
+    public void deleteActressNotFoundTest() {
+        when(this.actressRepository.findById(anyString())).thenReturn(Optional.empty());
+
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
+         this.actressService.deleteActress("%");
+        });
+
+        assertEquals(exception.getStatusCode(), HttpStatus.BAD_REQUEST);
+        assertEquals(exception.getReason(), "Could not delete the actress");
+    }
+
+    @Test
+    public void deleteActressErrorTest() {
+        doThrow(new Error("Error")).when(this.actressRepository).deleteById(anyString());
+        when(this.actressRepository.findById(anyString())).thenReturn(Optional.of(DataActressServiceProvider.foundActressModel()));
+
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
+            this.actressService.deleteActress("%");
+        });
+        assertEquals(exception.getStatusCode(), HttpStatus.BAD_GATEWAY);
+    }
+
+    @Test
+    public void updateActressTest() {
+        UpdateActressDto updateActressDto = DataActressServiceProvider.updateActressDto();
+    when(this.actressRepository.findById(anyString())).thenReturn(Optional.of(DataActressServiceProvider.foundActressModel()));
+    when(this.actressRepository.save(any(ActressModel.class))).thenReturn(DataActressServiceProvider.newActressMock());
+
+    this.actressService.updateActress("%", updateActressDto);
+
+    verify(this.actressRepository).save(any(ActressModel.class));
+    ArgumentCaptor<ActressModel> argumentCaptor = ArgumentCaptor.forClass(ActressModel.class);
+    verify(this.actressRepository).save(argumentCaptor.capture());
+    assertEquals(updateActressDto.getName(), argumentCaptor.getValue().getName());
+    }
+
+    @Test
+    public void updateActressNotFoundTest(){
+        UpdateActressDto updateActressDto = DataActressServiceProvider.updateActressDto();
+        when(this.actressRepository.findById(anyString())).thenReturn(Optional.empty());
+
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
+            this.actressService.updateActress("%", updateActressDto);
+        });
+
+        assertEquals(HttpStatus.BAD_REQUEST, exception.getStatusCode());
+        assertEquals("Could not delete the actress", exception.getReason());
+    }
+
+
+    @Test
+    public void updateActressPartialTest() {
+        UpdateActressDto updateActressDto = DataActressServiceProvider.updateActressDtoPartial();
+        when(this.actressRepository.findById(anyString())).thenReturn(Optional.of(DataActressServiceProvider.foundActressModel()));
+        when(this.actressRepository.save(any(ActressModel.class))).thenReturn(DataActressServiceProvider.newActressMock());
+
+        this.actressService.updateActress("%", updateActressDto);
+
+        verify(this.actressRepository).save(any(ActressModel.class));
+        ArgumentCaptor<ActressModel> argumentCaptor = ArgumentCaptor.forClass(ActressModel.class);
+        verify(this.actressRepository).save(argumentCaptor.capture());
+        assertNotEquals(updateActressDto.getName(), argumentCaptor.getValue().getName());
+    }
+
+    @Test
+    public void updateActressErrorTest() {
+        UpdateActressDto updateActressDto = DataActressServiceProvider.updateActressDto();
+        when(this.actressRepository.findById(anyString())).thenReturn(Optional.of(DataActressServiceProvider.foundActressModel()));
+        when(this.actressRepository.save(any(ActressModel.class))).thenThrow(new Error(("Error")));
+
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
+            this.actressService.updateActress("%", updateActressDto);
+        });
+
+        assertEquals(HttpStatus.BAD_GATEWAY, exception.getStatusCode());
     }
 
 }
